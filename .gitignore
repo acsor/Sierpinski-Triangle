@@ -1,0 +1,5 @@
+*.sw[op]
+__pycache__/
+*.out
+temp.png
+Documentation\ notes.md
