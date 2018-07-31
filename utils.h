@@ -17,11 +17,13 @@ typedef struct {
  * 	1 if dest == NULL.
  */
 int point_middle(point_t a, point_t b, point_t *dest);
-void cairo_triangle(cairo_t*, point_t, point_t, point_t);
+void cairo_triangle(cairo_t*, point_t a, point_t b, point_t c);
 /**
  * Draws a Sierpinski triangle with depth depth to cr.
  */
-void cairo_sierpinski_triangle(cairo_t *cr, unsigned int depth);
+void cairo_sierpinski_triangle(
+	cairo_t *cr, point_t a, point_t b, point_t c, int depth
+);
 
 
 #endif // UTILS_H
