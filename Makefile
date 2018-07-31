@@ -2,6 +2,9 @@ cc=gcc
 flags=-Wall `pkg-config --cflags --libs cairo`
 
 
+sierpinskit: main.c utils.o
+	$(cc) $(flags) -o sierpinskit $^
+
 runscratch: scratch.out
 	./scratch.out temp.png
 	eog ./temp.png

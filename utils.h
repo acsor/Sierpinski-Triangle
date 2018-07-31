@@ -24,6 +24,11 @@ void cairo_triangle(cairo_t*, point_t a, point_t b, point_t c);
 void cairo_sierpinski_triangle(
 	cairo_t *cr, point_t a, point_t b, point_t c, int depth
 );
+/**
+ * Automates the process of picking arbitrary points a, b and c choosing
+ * them at aesthetically pleasing coordinates.
+ */
+void cairo_sierpinski_triangle_auto(cairo_t *cr, int depth);
 
 
 #endif // UTILS_H
