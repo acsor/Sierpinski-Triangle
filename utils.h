@@ -1,8 +1,10 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <cairo.h>
 #include <stdlib.h>
+#include <string.h>
+#include <cairo.h>
+#include <ctype.h>
 
 typedef struct {
 	double x, y;
@@ -17,6 +19,16 @@ typedef struct {
  * 	1 if dest == NULL.
  */
 int point_middle(point_t a, point_t b, point_t *dest);
+/**
+ * Converts the standard RGBA format #AABBCCDD to Cairo's format in float
+ * values, such that 0 <= f <= 1 for every float number f representing a
+ * channel value.
+ *
+ * Returns:
+ * 	0 on success;
+ * 	1 if rgbain is an invalid string
+ */
+int std_rgba_to_cairo_rgba(char *rgbain, float rgbaout[]);
 void cairo_triangle(cairo_t*, point_t a, point_t b, point_t c);
 /**
  * Draws a Sierpinski triangle with depth depth to cr.

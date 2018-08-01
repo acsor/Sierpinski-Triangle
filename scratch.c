@@ -4,6 +4,8 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include <cairo.h>
 #include "utils.h"
 
@@ -13,15 +15,16 @@ typedef int (*test_ptr)(void*);
 int test_cairo_primitives(void *args);
 int test_cairo_triangle(void *args);
 int test_cairo_sierpinski_triangle(void *args);
+int test_uncategorized(void *args);
 
 int main (int argc, char *argv[]) {
 	test_ptr functions[] = {
 		test_cairo_primitives, test_cairo_triangle,
-		test_cairo_sierpinski_triangle
+		test_cairo_sierpinski_triangle, test_uncategorized
 	};
 	char *function_names[] = {
 		"test_cairo_primitives", "test_cairo_triangle",
-		"cairo_sierpinski_triangle"
+		"cairo_sierpinski_triangle", "test_uncategorized"
 	};
 	void *function_args[] = {
 		(void*) argv[1], (void*) argv[1], (void*) argv[1]
@@ -138,6 +141,22 @@ int test_cairo_sierpinski_triangle(void *args) {
 
 	cairo_destroy(cr);
 	cairo_surface_destroy(surface);
+
+	return 0;
+}
+
+int test_uncategorized(void *args) {
+	char *digits = "0123456ABCDEFZXYWVUwvu";
+	char *numbers[] = {"A494BC", "AA", "AF", "A0", "C0"};
+	int i, s = 5;
+
+	for (i = 0; i < strlen(digits); i++) {
+		printf("isxdigit(%c) == %d\n", digits[i], isxdigit(digits[i]));
+	}
+
+	for (i = 0; i < s; i++) {
+		printf("strtol(\"%s\") = %ld\n", numbers[i], strtol(numbers[i], NULL, 16));
+	}
 
 	return 0;
 }

@@ -15,6 +15,30 @@ int point_middle(point_t a, point_t b, point_t *dest) {
 	return 1;
 }
 
+int std_rgba_to_cairo_rgba(char *rgbain, float rgbaout[]) {
+	int i;
+	size_t insize = strlen(rgbain);
+	char temp[2];
+
+	if (insize != 9 || rgbain[0] != '#') {
+		return 1;
+	}
+
+	for (i = 1; i < insize; i++) {
+		if (!isxdigit(rgbain[i])) {
+			return 1;
+		}
+	}
+
+	for (i = 1; i < insize; i += 2) {
+		temp[0] = rgbain[i];
+		temp[1] = rgbain[i + 1];
+		rgbaout[(i - 1) / 2] = (float) strtol(temp, NULL, 16) / 255;
+	}
+
+	return 0;
+}
+
 void cairo_triangle(cairo_t* cr, point_t a, point_t b, point_t c) {
 	cairo_move_to(cr, a.x, a.y);
 	cairo_line_to(cr, b.x, b.y);
