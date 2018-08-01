@@ -8,17 +8,18 @@ library](https://www.cairographics.org/).
 As a first step, ensure Cairo is installed in your environment: [Cairo |
 Download](https://www.cairographics.org/download/).
 
-Once this dependency is done, run `make serpinskit` in your console to build the executable.
+Once this dependency is done, run `make serpinskit` in your console to build
+the executable.
 
 ## Execution
 ```
-serpinskit: <depth level>
+serpinskit: <Depth level>
 ```
 The first argument to the executable is the number of iterations to carry out
 on the initial canvas.
 
-Image `.png` files are saved as `Serpinski[0-9]+.png` in
-the same directory as the executable.
+Image `.png` files are saved as `Serpinski[0-9]+.png` in the same directory
+as the executable, unless the `-o` option is specified.
 
 As an example `./sierpinski 8` will yield:
 
