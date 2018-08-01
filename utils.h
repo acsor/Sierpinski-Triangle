@@ -6,6 +6,13 @@
 #include <cairo.h>
 #include <ctype.h>
 
+
+#define ASSERT_MSG(expression, msg, code)\
+	if (!(expression)) {\
+		fprintf(stderr, "Assertion error at %s:%d: %s\n", __FILE__, __LINE__, (msg));\
+		exit(code);\
+	}
+
 typedef struct {
 	double x, y;
 } point_t;
