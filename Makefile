@@ -22,4 +22,5 @@ utils.o: utils.c
 	$(cc) $(flags) -c $^
 
 clean:
-	rm -f sierpinskit *.out *.o temp.png Sierpinski[0-9].png test
+	rm -f sierpinskit *.out *.o temp.png Sierpinski*.png test\
+		Sierpinski*.svg

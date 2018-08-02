@@ -1,12 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <argp.h>
 #include <cairo.h>
+#include <cairo-svg.h>
 #include "utils.h"
 
 
 #define DESTFILESIZE 512
 #define DEFLINEWIDTH (0.00125)
+
+#define OPT_FORMAT_PNG "png"
+#define OPT_FORMAT_SVG "svg"
+
+typedef enum {
+	PNG = 0,
+	SVG
+} output_format;
 
 typedef struct {
 	unsigned int width, height;
@@ -14,6 +24,7 @@ typedef struct {
 	float line_width;
 	unsigned int depth;
 
+	output_format format;
 	char destfile[DESTFILESIZE];
 } cmd_args;
 
@@ -28,16 +39,17 @@ int main (int argc, char *argv[]) {
 		512, 512,
 		{1.0, 1.0, 1.0, 1.0}, {0.0, 0.0, 0.0, 1.0},
 		0.00125,
-		0, "\0"
+		0, PNG, "\0"
 	};
 
 	static struct argp_option options[] = {
-		{"fg", 'f', "<RGBA>", 0, "Background color in RGB format", 1},
-		{"bg", 'b', "<RGBA>", 0, "Foreground color in RGB format", 1},
-		{"linewidth", 'l', "<0..1>", 0, "Scaling factor of the line width. 0 to 1 float.", 2},
-		{"width", 'w', "<int>", 0, "Pixel width of the output image", 2},
-		{"height", 'h', "<int>", 0, "Pixel height of the output image", 2},
-		{"outputfile", 'o', "<filename>", 0, "Arbitrary output file name"},
+		{"fg", 'f', "<#RGBA>", 0, "Background color in RGBA format", 1},
+		{"bg", 'b', "<#RGBA>", 0, "Foreground color in RGBA format", 1},
+		{"linewidth", 'l', "<0..1>", 0, "Scaling factor of the line width. 0 to 1 float", 2},
+		{"width", 'w', "<int>", 0, "Width of the output image, in pixels if PNG or points if SVG", 2},
+		{"height", 'h', "<int>", 0, "Height of the output image, in pixels if PNG or points if SVG", 2},
+		{"format", 'F', "<[png|svg]>", 0, "Output file format", 3},
+		{"outputfile", 'o', "<filename>", 0, "Arbitrary output file name", 3},
 		{0}
 	};
 
@@ -49,13 +61,20 @@ int main (int argc, char *argv[]) {
 	};
 
 	cairo_t *cr;
-	cairo_surface_t *s;
+	cairo_surface_t *s = NULL;
 
 	argp_parse(&a, argc, argv, 0, NULL, (void*) &args);
 
-	s = cairo_image_surface_create(
-		CAIRO_FORMAT_ARGB32, args.width, args.height
-	);
+	if (args.format == PNG) {
+		s = cairo_image_surface_create(
+			CAIRO_FORMAT_ARGB32, args.width, args.height
+		);
+	} else if (args.format == SVG) {
+		// TO-DO Can a more careful conversion of the width and height
+		// parameters be done with regard to the point unit? (I guess no.)
+		s = cairo_svg_surface_create(args.destfile, args.width, args.height);
+	}
+
 	cr = cairo_create(s);
 	cairo_scale(cr, args.width, args.height);
 
@@ -93,9 +112,17 @@ static error_t sierpinski_argp_parser(int key, char *arg, struct argp_state *s) 
 			break;
 		case ARGP_KEY_END: // At the end of the parsing process
 			if (*a->destfile == '\0') {
-				snprintf(
-					a->destfile, DESTFILESIZE, "Sierpinski%d.png", a->depth
-				);
+				if (a->format == PNG) {
+					snprintf(
+						a->destfile, DESTFILESIZE,
+						"Sierpinski%d.png", a->depth
+					);
+				} else if (a->format == SVG) {
+					snprintf(
+						a->destfile, DESTFILESIZE,
+						"Sierpinski%d.svg", a->depth
+					);
+				}
 			}
 			break;
 		case 'f':
@@ -112,6 +139,15 @@ static error_t sierpinski_argp_parser(int key, char *arg, struct argp_state *s) 
 			break;
 		case 'l':
 			a->line_width = DEFLINEWIDTH * atof(arg);
+			break;
+		case 'F':
+			if (!strcmp(arg, OPT_FORMAT_PNG)) {
+				a->format = PNG;
+			} else if (!strcmp(arg, OPT_FORMAT_SVG)) {
+				a->format = SVG;
+			} else {
+				argp_error(s, "-F <[png|svg]>");
+			}
 			break;
 		case 'o':
 			strncpy(a->destfile, arg, DESTFILESIZE);
