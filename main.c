@@ -6,10 +6,12 @@
 
 
 #define DESTFILESIZE 512
+#define DEFLINEWIDTH (0.00125)
 
 typedef struct {
 	unsigned int width, height;
 	float rgba_fg[4], rgba_bg[4];
+	float line_width;
 	unsigned int depth;
 
 	char destfile[DESTFILESIZE];
@@ -25,14 +27,16 @@ int main (int argc, char *argv[]) {
 	cmd_args args = {
 		512, 512,
 		{1.0, 1.0, 1.0, 1.0}, {0.0, 0.0, 0.0, 1.0},
+		0.00125,
 		0, "\0"
 	};
 
 	static struct argp_option options[] = {
-		{"fg", 'f', "RGBA", 0, "Background color in RGB format", 1},
-		{"bg", 'b', "RGBA", 0, "Foreground color in RGB format", 1},
-		{"width", 'w', "int", 0, "Pixel width of the output image", 2},
-		{"height", 'h', "int", 0, "Pixel height of the output image", 2},
+		{"fg", 'f', "<RGBA>", 0, "Background color in RGB format", 1},
+		{"bg", 'b', "<RGBA>", 0, "Foreground color in RGB format", 1},
+		{"linewidth", 'l', "<0..1>", 0, "Scaling factor of the line width. 0 to 1 float.", 2},
+		{"width", 'w', "<int>", 0, "Pixel width of the output image", 2},
+		{"height", 'h', "<int>", 0, "Pixel height of the output image", 2},
 		{"outputfile", 'o', "<filename>", 0, "Arbitrary output file name"},
 		{0}
 	};
@@ -63,7 +67,7 @@ int main (int argc, char *argv[]) {
 	cairo_set_source_rgba(
 		cr, args.rgba_fg[0], args.rgba_fg[1], args.rgba_fg[2], args.rgba_fg[3]
 	);
-	cairo_set_line_width(cr, 0.0025);
+	cairo_set_line_width(cr, args.line_width);
 	cairo_sierpinski_triangle_auto(cr, args.depth);
 	cairo_stroke(cr);
 	
@@ -105,6 +109,9 @@ static error_t sierpinski_argp_parser(int key, char *arg, struct argp_state *s) 
 			break;
 		case 'h':
 			a->height = atoi(arg);
+			break;
+		case 'l':
+			a->line_width = DEFLINEWIDTH * atof(arg);
 			break;
 		case 'o':
 			strncpy(a->destfile, arg, DESTFILESIZE);

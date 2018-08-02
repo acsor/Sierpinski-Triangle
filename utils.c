@@ -97,8 +97,7 @@ static void cairo_sierpinski_triangle_rec(
 }
 
 void cairo_sierpinski_triangle_auto(cairo_t *cr, int depth) {
-	point_t a = {1.0 / 2, 1.0 / 5}, b = {5.0 / 6, 4.0 / 5},
-			c = {1.0 / 6, 4.0 / 5};
+	point_t a = {0.5, 0.1}, b = {0.925, 0.9}, c = {0.075, 0.9};
 
 	cairo_sierpinski_triangle(cr, a, b, c, depth);
 }

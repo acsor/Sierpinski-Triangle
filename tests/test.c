@@ -58,7 +58,7 @@ int test_std_rgba_to_cairo_rgba() {
 	};
 
 	float output[4];
-	int elements = 8;
+	int elements = 14;
 	int i, j, retval;
 	char errmsg[256];
 

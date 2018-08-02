@@ -26,4 +26,4 @@ As an example `./sierpinski 8` will yield:
 !["Eight levels of the Sierpinski process"][1]
 
 
-[1]: ./SierpinskiSample.png
+[1]: ./.SierpinskiExample.png
